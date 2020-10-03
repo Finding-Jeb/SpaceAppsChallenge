@@ -1,6 +1,19 @@
+#include <ArduinoJson.h>
 #include <ESP8266WiFi.h>
+#include <ESP8266HTTPClient.h>
 #include "config.h"
 
+HTTPClient data_client;
+int compass;
+int elevation;
+
+//https://arduinojson.org/v6/assistant/
+const size_t capacity = JSON_OBJECT_SIZE(2) + 20;    
+DynamicJsonDocument doc(capacity);    
+
+
+
+char readBuffer[40];
 
 void setup() {
   Serial.begin(115200);
@@ -12,7 +25,7 @@ void setup() {
   IPAddress SUBNET_MASK;
   WiFi.config(ip, gateway, subnet_mask);
   WiFi.mode(WIFI_STA);
-  */
+  */  
   
   WiFi.begin(SSID_LOCAL, WLAN_KEY);
   
@@ -29,10 +42,28 @@ void setup() {
   Serial.println(WiFi.localIP());
 
   
-
+  data_client.begin(LOCAL_SERVER);
+  Serial.println("Connected to local server");
+  
+  
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+
+  char httpCode = data_client.GET();
+  if(httpCode){
+      
+    //https://arduinojson.org/v6/assistant/  
+    String json = data_client.getString(); 
+    deserializeJson(doc, json);    
+    compass = doc["compass"];
+    elevation = doc["elevation"]; 
+
+    Serial.print("compass = ");
+    Serial.print(compass);
+    Serial.print(", elevation = ");
+    Serial.println(elevation);
+    
+  } 
 
 }
