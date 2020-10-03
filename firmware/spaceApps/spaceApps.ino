@@ -1,10 +1,11 @@
 #include <ESP8266WiFi.h>
+#include "config.h"
 
 void setup() {
   Serial.begin(115200);
   Serial.println();
   
-  WiFi.begin("network-name", "pass-to-network");
+  WiFi.begin("SSID", "WLAN_KEY");
 
   Serial.print("Connecting");
   while (WiFi.status() != WL_CONNECTED)
