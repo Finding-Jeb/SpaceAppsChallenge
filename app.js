@@ -20,41 +20,6 @@ var bmngLayer = new WorldWind.BMNGLayer();
 var atmosphereLayer = new WorldWind.AtmosphereLayer();
 var starfieldLayer = new WorldWind.StarFieldLayer();
 
-// Ground Stations Layer
-var groundStations = [
-    {name: 'Matera, Italy', latitude: 40.65, longitude: 16.7},
-    {name: 'Svalbard, Norway', latitude: 78.2306, longitude: 15.3894},
-    {name: 'Maspalomas, Spain', latitude: 27.7629, longitude: -15.6338},
-];
-
-var placemarkAttributes = new WorldWind.PlacemarkAttributes(null);
-placemarkAttributes.imageSource = "resources/icons/ground-station.png";
-placemarkAttributes.imageScale = 0.5;
-placemarkAttributes.imageOffset = new WorldWind.Offset(
-    WorldWind.OFFSET_FRACTION, 0.3,
-    WorldWind.OFFSET_FRACTION, 0.0);
-placemarkAttributes.imageColor = WorldWind.Color.WHITE;
-placemarkAttributes.labelAttributes.offset = new WorldWind.Offset(
-    WorldWind.OFFSET_FRACTION, 0.5,
-    WorldWind.OFFSET_FRACTION, 1.0);
-placemarkAttributes.labelAttributes.color = WorldWind.Color.WHITE;
-
-var groundStationsLayer = new WorldWind.RenderableLayer("Ground Stations");
-
-for(var i = 0, len = groundStations.length; i < len; i++) {
-    var groundStation = groundStations[i];
-
-    var placemark = new WorldWind.Placemark(new WorldWind.Position(groundStation.latitude,
-                                                                   groundStation.longitude,
-                                                                   1e3));
-
-    placemark.altitudeMode = WorldWind.RELATIVE_TO_GROUND;
-    placemark.label = groundStation.name;
-    placemark.attributes = placemarkAttributes;
-
-    groundStationsLayer.addRenderable(placemark);
-}
-
 // Orbit Propagation (MIT License, see https://github.com/shashwatak/satellite-js)
 
 function getPosition(satrec, time) {
@@ -82,79 +47,71 @@ function getPosition(satrec, time) {
     return new WorldWind.Position(latitude, longitude, altitude);
 }
 
-let raw_all_orbit_bodies = fs.readFileSync('/data/all_on-orbit_bodies.json');
-let all_orbit_bodies = JSON.parse(raw_all_orbit_bodies);
-//var tle_line_1 = '1 39634U 14016A   15092.10425777 -.00000062  00000-0 -35354-5 0  9992'
-//var tle_line_2 = '2 39634  98.1809 100.2577 0001271  80.6097 279.5256 14.59197994 52994'
-for (var index = 0; index < all_orbit_bodies.length; index++){
-    var orbit_body = all_orbit_bodies[index];
-    var tle_line_1 = orbit_body.TLE_LINE_1;
-    var tle_line_2 = orbit_body.TLE_LINE_2;
-    var satrec = satellite.twoline2satrec(tle_line_1, tle_line_2);
+var tle_line_1 = '1 39634U 14016A   15092.10425777 -.00000062  00000-0 -35354-5 0  9992'
+var tle_line_2 = '2 39634  98.1809 100.2577 0001271  80.6097 279.5256 14.59197994 52994'
+var satrec = satellite.twoline2satrec(tle_line_1, tle_line_2);
 
-    var now = new Date();
-    var pastOrbit = [];
-    var futureOrbit = [];
-    var currentPosition = null;
-    for(var i = -98; i <= 98; i++) {
-        var time = new Date(now.getTime() + i*60000);
+var now = new Date();
+var pastOrbit = [];
+var futureOrbit = [];
+var currentPosition = null;
+for(var i = -98; i <= 98; i++) {
+    var time = new Date(now.getTime() + i*60000);
 
-        var position = getPosition(satrec, time)
+    var position = getPosition(satrec, time)
 
-        if(i < 0) {
-            pastOrbit.push(position);
-        } else if(i > 0) {
-            futureOrbit.push(position);
-        } else {
-            currentPosition = new WorldWind.Position(position.latitude,
-                position.longitude,
-                position.altitude);
-            pastOrbit.push(position);
-            futureOrbit.push(position);
-        }
+    if(i < 0) {
+        pastOrbit.push(position);
+    } else if(i > 0) {
+        futureOrbit.push(position);
+    } else {
+        currentPosition = new WorldWind.Position(position.latitude,
+            position.longitude,
+            position.altitude);
+        pastOrbit.push(position);
+        futureOrbit.push(position);
     }
-
-// Orbit Path
-    var pathAttributes = new WorldWind.ShapeAttributes(null);
-    pathAttributes.outlineColor = WorldWind.Color.RED;
-    pathAttributes.interiorColor = new WorldWind.Color(1, 0, 0, 0.5);
-
-    var pastOrbitPath = new WorldWind.Path(pastOrbit);
-    pastOrbitPath.useSurfaceShapeFor2D = true;
-    pastOrbitPath.altitudeMode = WorldWind.RELATIVE_TO_GROUND;
-    pastOrbitPath.attributes = pathAttributes;
-
-    var pathAttributes = new WorldWind.ShapeAttributes(pathAttributes);
-    pathAttributes.outlineColor = WorldWind.Color.GREEN;
-    pathAttributes.interiorColor = new WorldWind.Color(0, 1, 0, 0.5);
-
-    var futureOrbitPath = new WorldWind.Path(futureOrbit);
-    futureOrbitPath.useSurfaceShapeFor2D = true;
-    futureOrbitPath.altitudeMode = WorldWind.RELATIVE_TO_GROUND;
-    futureOrbitPath.attributes = pathAttributes;
-
-    var orbitLayer = new WorldWind.RenderableLayer("Orbit");
-
-    orbitLayer.addRenderable(pastOrbitPath);
-    orbitLayer.addRenderable(futureOrbitPath);
-
-// Satellite
-    var placemarkAttributes = new WorldWind.PlacemarkAttributes(null);
-    placemarkAttributes.imageSource = "resources/icons/satellite.png";
-    placemarkAttributes.imageScale = 1;
-    placemarkAttributes.imageOffset = new WorldWind.Offset(
-        WorldWind.OFFSET_FRACTION, 0.5,
-        WorldWind.OFFSET_FRACTION, 0.5);
-    placemarkAttributes.imageColor = WorldWind.Color.WHITE;
-    placemarkAttributes.labelAttributes.offset = new WorldWind.Offset(
-        WorldWind.OFFSET_FRACTION, 0.5,
-        WorldWind.OFFSET_FRACTION, 1.5);
-    placemarkAttributes.labelAttributes.color = WorldWind.Color.WHITE;
-
-    var highlightPlacemarkAttributes = new WorldWind.PlacemarkAttributes(placemarkAttributes);
-    highlightPlacemarkAttributes.imageScale = 1.2;
 }
 
+// Orbit Path
+var pathAttributes = new WorldWind.ShapeAttributes(null);
+pathAttributes.outlineColor = WorldWind.Color.RED;
+pathAttributes.interiorColor = new WorldWind.Color(1, 0, 0, 0.5);
+
+var pastOrbitPath = new WorldWind.Path(pastOrbit);
+pastOrbitPath.useSurfaceShapeFor2D = true;
+pastOrbitPath.altitudeMode = WorldWind.RELATIVE_TO_GROUND;
+pastOrbitPath.attributes = pathAttributes;
+
+var pathAttributes = new WorldWind.ShapeAttributes(pathAttributes);
+pathAttributes.outlineColor = WorldWind.Color.GREEN;
+pathAttributes.interiorColor = new WorldWind.Color(0, 1, 0, 0.5);
+
+var futureOrbitPath = new WorldWind.Path(futureOrbit);
+futureOrbitPath.useSurfaceShapeFor2D = true;
+futureOrbitPath.altitudeMode = WorldWind.RELATIVE_TO_GROUND;
+futureOrbitPath.attributes = pathAttributes;
+
+var orbitLayer = new WorldWind.RenderableLayer("Orbit");
+
+orbitLayer.addRenderable(pastOrbitPath);
+orbitLayer.addRenderable(futureOrbitPath);
+
+// Satellite
+var placemarkAttributes = new WorldWind.PlacemarkAttributes(null);
+placemarkAttributes.imageSource = "resources/icons/satellite.png";
+placemarkAttributes.imageScale = 1;
+placemarkAttributes.imageOffset = new WorldWind.Offset(
+    WorldWind.OFFSET_FRACTION, 0.5,
+    WorldWind.OFFSET_FRACTION, 0.5);
+placemarkAttributes.imageColor = WorldWind.Color.WHITE;
+placemarkAttributes.labelAttributes.offset = new WorldWind.Offset(
+    WorldWind.OFFSET_FRACTION, 0.5,
+    WorldWind.OFFSET_FRACTION, 1.5);
+placemarkAttributes.labelAttributes.color = WorldWind.Color.WHITE;
+
+var highlightPlacemarkAttributes = new WorldWind.PlacemarkAttributes(placemarkAttributes);
+highlightPlacemarkAttributes.imageScale = 1.2;
 
 var satelliteLayer = new WorldWind.RenderableLayer("Satellite");
 
