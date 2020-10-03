@@ -158,6 +158,8 @@ placemark.highlightAttributes = highlightPlacemarkAttributes;
 
 satelliteLayer.addRenderable(placemark);
 
+var compassLayer = new WorldWind.RenderableLayer("Compass");
+
 // Update WorldWindow
 var wwd = new WorldWind.WorldWindow("wwd");
 wwd.drawContext.clearColor = WorldWind.Color.colorFromBytes(0,0,0,0);
@@ -168,6 +170,7 @@ wwd.addLayer(starfieldLayer);
 wwd.addLayer(groundStationsLayer);
 wwd.addLayer(orbitLayer);
 wwd.addLayer(satelliteLayer);
+wwd.addLayer(compassLayer);
 
 // Responsive altitude for mobile devices
 if (screen.width > 900 ) {
