@@ -14,8 +14,10 @@ const size_t capacity = JSON_OBJECT_SIZE(2) + 20;
 DynamicJsonDocument doc(capacity);    
 
 //Motors
-CheapStepper stepper(2, 4, 5, 16);
+CheapStepper stepper(0, 4, 5, 16);
 bool moveClockwise = true;
+
+Servo servo;
 
 void setup() {
   Serial.begin(115200);
@@ -58,13 +60,14 @@ void setup() {
   Serial.print(stepper.getDelay()); // get delay between steps for set RPM
   Serial.println(" microseconds between steps");
 
-  //go the middle: South calibration
-  
- 
+  servo.attach(2);
+  servo.write(0);
+  delay(500);
 }
 
 void loop() {
 
+  
   stepper.run();
 
   int stepsLeft = stepper.getStepsLeft();
@@ -91,13 +94,19 @@ void loop() {
       //Serial.print(compass);
       //Serial.print(", elevation = ");
       //Serial.println(elevation);    
-    } 
+    }
+    
+    
 
     //Use data to drive motors
-    stepper.newMoveToDegree(moveClockwise, compass);
-  }
-
-  delay(1);
+    stepper.newMoveToDegree(moveClockwise, compass); //do this first, it's non blocking
+    servo.write(elevation);
+    delay(2000);    
+    
+   }
+  
+  
+  delay(10);
   
 
 }
