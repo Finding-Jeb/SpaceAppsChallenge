@@ -1,0 +1,22 @@
+func(sat_lat, sat_long, sat_alt, lat, long):
+
+	//work out position vectors for each
+	   	    
+	vec_sat, vec_user = Alt x [ cos(long)cos(lat), sin(lat), -sin(Long)cos(lat) ]
+			  	   	
+	
+	vec_relative = vec_sat-vec_user
+
+	//Transform into the surface coordinates
+	M = 
+	[ cos(long) 0 sin(long) ]   [   1      0         0   ]
+	[    0      1     0	    ] x [   0  cos(lat) sin(lat) ]
+	[-sin(long) 0 cos(long) ]   [   0 -sin(lat) cos(lat) ]
+	
+	vec_suface = vec_relative x M
+
+	use arctan(x, y) to get compass: careful choice of function needed, so it has a return range of 360 degrees
+	convert appropriately to compass direction
+	(this will depend on exact math library)
+
+	elevation = arctan(z / sqrt(x^2 + y^2) )
