@@ -1,3 +1,5 @@
+//below is code that probably would've been used for handling the requests sent by the microcontroller, and return required tracking data
+/*
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
@@ -22,3 +24,4 @@ var server = http.createServer((req, res) => {
 }, (req) => { console.log(req.connection + 'sending request')});
 module.exports = {server, filtered_bodies, body_ids}
 server.listen(8080, () => {console.log("Server should be listening on 8080.")});
+*/

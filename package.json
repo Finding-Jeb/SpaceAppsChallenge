@@ -2,7 +2,7 @@
   "name": "spaceappschallenge",
   "version": "1.0.0",
   "description": "Frontend and server for Finding Jeb's 2020 NASA SpaceApps Challenge Submission.",
-  "main": "main.js",
+  "main": "app.js",
   "type": "module",
   "directories": {
     "doc": "docs"
@@ -18,7 +18,7 @@
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node app.js"
   },
   "repository": {
     "type": "git",
