@@ -34,7 +34,7 @@ function deg2text(deg, letters) {
 }
 
 function updateLLA(position) {
-    selectedSatellitePlaceholder.textContent = "Sentinel 1A";
+    selectedSatellitePlaceholder.textContent = "Jebediah Kerman";
     latitudePlaceholder.textContent = deg2text(position.latitude, 'NS');
     longitudePlaceholder.textContent = deg2text(position.longitude, 'EW');
     altitudePlaceholder.textContent = (Math.round(position.altitude / 10) / 100) + "km";
@@ -158,11 +158,11 @@ orbitLayer.addRenderable(futureOrbitPath);
 
 // Satellite
 var placemarkAttributes = new WorldWind.PlacemarkAttributes(null);
-placemarkAttributes.imageSource = "resources/icons/satellite.png";
-placemarkAttributes.imageScale = 1;
+placemarkAttributes.imageSource = "resources/icons/jeb.png";
+placemarkAttributes.imageScale = 0.15;
 placemarkAttributes.imageOffset = new WorldWind.Offset(
-    WorldWind.OFFSET_FRACTION, 0.3,
-    WorldWind.OFFSET_FRACTION, 0.0);
+    WorldWind.OFFSET_FRACTION, 0,
+    WorldWind.OFFSET_FRACTION, 0.1);
 placemarkAttributes.imageColor = WorldWind.Color.WHITE;
 placemarkAttributes.labelAttributes.offset = new WorldWind.Offset(
     WorldWind.OFFSET_FRACTION, 0.5,
@@ -178,7 +178,7 @@ var placemark = new WorldWind.Placemark(currentPosition);
 updateLLA(currentPosition);
 
 placemark.altitudeMode = WorldWind.RELATIVE_TO_GROUND;
-placemark.label = "Sentinel 1A";
+placemark.label = "Jebediah Kerman";
 placemark.attributes = placemarkAttributes;
 placemark.highlightAttributes = highlightPlacemarkAttributes;
 
