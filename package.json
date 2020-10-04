@@ -1,0 +1,34 @@
+{
+  "name": "spaceappschallenge",
+  "version": "1.0.0",
+  "description": "Frontend and server for Finding Jeb's 2020 NASA SpaceApps Challenge Submission.",
+  "main": "app.js",
+  "type": "module",
+  "directories": {
+    "doc": "docs"
+  },
+  "dependencies": {
+    "@nasaworldwind/worldwind": "^0.10.0",
+    "http-proxy": "^1.18.1",
+    "http-server": "^0.12.3",
+    "install": "^0.13.0",
+    "node": "^14.13.0",
+    "satellite.js": "^4.1.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Finding-Jeb/SpaceAppsChallenge.git"
+  },
+  "author": "Anan Venkatesh",
+  "contributors": ["Harry Snell", "Mario Alejandro Lizarraga Tolentino"],
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Finding-Jeb/SpaceAppsChallenge/issues"
+  },
+  "homepage": "https://github.com/Finding-Jeb/SpaceAppsChallenge#readme"
+}
