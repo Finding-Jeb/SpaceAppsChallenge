@@ -57,6 +57,35 @@ footer {
   margin: 0 auto;
   overflow: hidden;
 }
+.flex-container {
+    width: 80%;
+    max-width: 1300px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    margin: 0 auto;
+    overflow: hidden;
+}
+.scroll-select{
+    width: 150px;
+    height: 600px;
+    overflow-y: auto;
+}
+.scroll-select a {
+    background-color: #eee; /* Grey background color */
+    color: black; /* Black text color */
+    display: block; /* Make the links appear below each other */
+    padding: 12px; /* Add some padding */
+    text-decoration: none; /* Remove underline from links */
+}
+.scroll-select a:hover{
+    background-color: #ccc;
+}
+.scroll-select a.active {
+    background-color: #4caf50;
+    color: white;
+}
 .ghost-box {
   background-color: rgba(17, 17, 17, 0.35);
   padding: 1em 1.5em 1em 1.5em;
